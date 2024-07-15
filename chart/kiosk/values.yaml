@@ -1,0 +1,45 @@
+# Default values for kiosk.
+# This is a YAML-formatted file.
+
+X11:
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/x11
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: notaskbar
+
+pulseaudio:
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/pa
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: latest
+
+workload:
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/firefox
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: latest
+
+vnc: 
+  enabled: false
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/vnc
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "vnc"
+  service:
+    type: ClusterIP
+    port: 80
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+
+podAnnotations: {}
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,15 @@
+{{ if eq .Values.vnc.enabled "true" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallboard-vnc
+spec:
+  ports:
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
+  selector:
+    name: test-wallboard
+  type: LoadBalancer
+{{ end }}

@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "kiosk.fullname" . }}
+  labels:
+    {{- include "kiosk.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "kiosk.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kiosk.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: x11
+          image: {{ .Values.X11.image.repository }}:{{ .Values.X11.image.tag }}
+          imagePullPolicy: {{ .Values.X11.image.pullPolicy }}
+          restartPolicy: Always
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: false
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /home/user/xauthority/
+              name: xauthority
+            - mountPath: /run/udev/data/
+              name: udev-data
+        - name: pulseaudio
+          image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
+          imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
+          command: ["bash"]
+          args: ["-c", "chmod a+rw /dev/snd/*; pulseaudio"]
+          restartPolicy: Always
+          securityContext: 
+            privileged: true
+            readOnlyRootFilesystem: false
+          env:
+          - name: PULSE_SERVER
+            value: "127.0.0.1" 
+          - name: DISPLAY
+            value: ':0'
+          - name: XAUTHORITY
+            value: /root/xauthority/.xauth
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /root/xauthority/
+              name: xauthority
+            - mountPath: /run/udev/data/
+              name: udev-data
+      containers:
+        - name: workload
+          image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
+          imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{ if eq .Values.vnc.enabled "true" }}
+        - name: vnc
+          image: "{{ .Values.vnc.image.repository }}:{{ .Values.vnc.image.tag }}"
+          imagePullPolicy: {{ .Values.vnc.image.pullPolicy }}
+          ports:
+            - containerPort: 5900
+              name: vnc
+          env:
+            - name: DISPLAY
+              value: ':0'
+            - name: XAUTHORITY
+              value: /home/user/xauthority/.xauth
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /home/user/xauthority/
+              name: xauthority
+        {{ end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
