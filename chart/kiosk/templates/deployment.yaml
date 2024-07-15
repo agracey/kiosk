@@ -65,7 +65,7 @@ spec:
           imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{ if eq .Values.vnc.enabled "true" }}
+        {{ if .Values.vnc.enabled }}
         - name: vnc
           image: "{{ .Values.vnc.image.repository }}:{{ .Values.vnc.image.tag }}"
           imagePullPolicy: {{ .Values.vnc.image.pullPolicy }}

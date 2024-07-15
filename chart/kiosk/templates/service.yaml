@@ -1,4 +1,4 @@
-{{ if eq .Values.vnc.enabled "true" }}
+{{ if .Values.vnc.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
