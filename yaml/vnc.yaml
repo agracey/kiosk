@@ -1,0 +1,114 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: wallboard
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: wallboard
+  template:
+    metadata:
+      labels:
+        name: wallboard
+    spec:
+      initContainers:
+        - name: x11
+          image: registry.opensuse.org/home/atgracey/wallboardos/15.5/x11:notaskbar
+          imagePullPolicy: Always
+          restartPolicy: Always
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: false
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /home/user/xauthority/
+              name: xauthority
+            - mountPath: /run/udev/data/
+              name: udev-data
+        - name: audio
+          image: registry.opensuse.org/home/atgracey/wallboardos/15.5/pa:latest
+          command: ["bash"]
+          args: ["-c", "chmod a+rw /dev/snd/*; pulseaudio"]
+          imagePullPolicy: IfNotPresent
+          restartPolicy: Always
+          securityContext: 
+            privileged: true
+            readOnlyRootFilesystem: false
+          env:
+          - name: PULSE_SERVER
+            value: "127.0.0.1" 
+          - name: DISPLAY
+            value: ':0'
+          - name: XAUTHORITY
+            value: /root/xauthority/.xauth
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /root/xauthority/
+              name: xauthority
+            - mountPath: /run/udev/data/
+              name: udev-data
+      containers:
+        - name: vnc
+          command: ["x11vnc"]
+          ports:
+            - containerPort: 5900
+              name: vnc
+          env:
+            - name: DISPLAY
+              value: ':0'
+            - name: XAUTHORITY
+              value: /home/user/xauthority/.xauth
+          image: registry.opensuse.org/home/atgracey/wallboardos/15.5/vnc:vnc
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /home/user/xauthority/
+              name: xauthority
+        - name: wallboard
+          env:
+            - name: PULSE_SERVER
+              value: '127.0.0.1'
+            - name: DISPLAY
+              value: ':0'
+            - name: XAUTHORITY
+              value: /home/user/xauthority/.xauth
+          image: docker.io/atgracey/kiosk-test:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - mountPath: /tmp/.X11-unix/
+              name: xsocket
+            - mountPath: /home/user/xauthority/
+              name: xauthority
+      dnsPolicy: ClusterFirst
+      terminationGracePeriodSeconds: 5
+      volumes:
+        - name: xauthority
+          emptyDir: {}
+        - name: xsocket
+          emptyDir: {}
+        - name: udev-data
+          hostPath:
+            path: /run/udev/data/
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallboard-vnc
+  namespace: default
+spec:
+  ports:
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
+  selector:
+    name: test-wallboard
+  type: LoadBalancer
