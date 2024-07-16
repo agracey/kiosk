@@ -26,8 +26,15 @@ To run the basic demo in Kubernetes:
 
 If you want to replace firefox with your own application, you need to build your application into an OCI container image. 
 
-TODO: Instructions on doing this
+The application container needs the appropriate libraries to be able to communicate with X11. For Electron apps, here are the libraries required:
 
+- `libX11-xcb1`
+- `libgtk-3-0`
+- `xorg-x11-fonts`
+- `libpulse0`
+- `libavcodec58`
+
+For an example workload and Dockerfile, check out the [electron app in this repo](./electron-example/)
 
 # Work that I would like to get to in the future
 
@@ -35,3 +42,4 @@ TODO: Instructions on doing this
 - Replace PulseAudio with Pipewire
 - Minimize installed packages (and container size)
 - Build [buildpack](https://buildpacks.io) for Electron
+- Rename project to something more interesting?

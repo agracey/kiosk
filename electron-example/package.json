@@ -1,0 +1,51 @@
+{
+  "name": "electron-example",
+  "version": "1.0.0",
+  "description": "Example Application for running Electron in a container",
+  "main": "dist/index.js",
+  "build": {
+    "appId": "Sample",
+    "artifactName": "Sample.rpm",
+    "directories": {
+      "output": "deployment"
+    },
+    "files": [
+      "!node_modules",
+      "dist/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": "rpm"
+    },
+    "rpm": {
+      "packageName": "sample-kiosk"
+    }
+  },
+  "scripts": {
+    "compile": "tsc",
+    "build": "npm run compile && electron-builder -l"
+  },
+  "homepage": "https://github.com/atgracey/kiosk",
+  "repository": "https://github.com/atgracey/kiosk",
+  "keywords": [],
+  "author": {
+    "name": "Me",
+    "email": "me@example.com"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "electron": "^12.0.9",
+    "electron-builder": "^22.10.5",
+    "eslint": "^7.27.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "prettier": "^2.3.0",
+    "ts-node": "^9.1.1",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
+  }
+}
