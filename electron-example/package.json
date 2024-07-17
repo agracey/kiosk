@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "build": {
     "appId": "Sample",
-    "artifactName": "Sample.rpm",
+    "artifactName": "Sample",
     "directories": {
       "output": "deployment"
     },
@@ -15,7 +15,7 @@
       "package.json"
     ],
     "linux": {
-      "target": "rpm"
+      "target": "dir"
     },
     "rpm": {
       "packageName": "sample-kiosk"
@@ -25,8 +25,8 @@
     "compile": "tsc",
     "build": "npm run compile && electron-builder -l"
   },
-  "homepage": "https://github.com/atgracey/kiosk",
-  "repository": "https://github.com/atgracey/kiosk",
+  "homepage": "https://github.com/agracey/kiosk",
+  "repository": "https://github.com/agracey/kiosk",
   "keywords": [],
   "author": {
     "name": "Me",
