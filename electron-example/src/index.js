@@ -1,7 +1,7 @@
-import { app, BrowserWindow, globalShortcut, webContents } from "electron";
+const { app, BrowserWindow } = require("electron")
 console.log("Starting Demo Kiosk App");
 
-let win: BrowserWindow;
+const sample_url = process.env.URL || "https://google.com"
 
 
 function createWindow() {
@@ -17,12 +17,14 @@ function createWindow() {
       kiosk: true // enable kiosk mode, makes it full screen and what not 
     });
 
-    win.loadURL("https://google.com");
+    win.loadURL(sample_url);
 
 
   win.webContents.on("did-fail-load", function() {
+    console.log('Load failed')
     setTimeout(()=>{
-      win.loadURL("https://google.com");
+      console.log(`Trying to load ${sample_url} again`)
+      win.loadURL(sample_url);
     }, 1000)
   });
 
@@ -34,7 +36,7 @@ function createWindow() {
     console.log("Minimize triggered, prevented..");
     event.preventDefault() // stop the browser window from being closed
   })
-  
+
   win.on('close', event => {
     console.log("Close triggered, prevented");
     event.preventDefault() // stop the browser window from being closed
@@ -42,5 +44,6 @@ function createWindow() {
 }
 
 app.on("ready", () => {
+  console.log('Ready. Trying to load: ' + sample_url)
   createWindow();
 });

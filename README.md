@@ -42,4 +42,5 @@ For an example workload and Dockerfile, check out the [electron app in this repo
 - Replace PulseAudio with Pipewire
 - Minimize installed packages (and container size)
 - Build [buildpack](https://buildpacks.io) for Electron
+- Document usage with [Epinio](https://epinio.io) to improve DX
 - Rename project to something more interesting?

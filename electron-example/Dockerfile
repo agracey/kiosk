@@ -11,6 +11,6 @@ FROM registry.opensuse.org/home/atgracey/wallboardos/15.5/x11app-base:latest
 
 WORKDIR /app
 COPY --from=build /app/deployment/linux-unpacked/ /app/
+USER user
 
-
-CMD ["/app/electron-example"]
+CMD ["/app/electron-example", "--no-sandbox", "--no-zygote"]
