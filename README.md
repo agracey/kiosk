@@ -30,9 +30,13 @@ The application container needs the appropriate libraries to be able to communic
 
 - `libX11-xcb1`
 - `libgtk-3-0`
+- `mozilla-nss`
 - `xorg-x11-fonts`
 - `libpulse0`
 - `libavcodec58`
+- `libasound2` 
+- `npm-default`
+- `nodejs-default`
 
 For an example workload and Dockerfile, check out the [electron app in this repo](./electron-example/)
 

@@ -63,6 +63,8 @@ spec:
         - name: workload
           image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
           imagePullPolicy: {{ .Values.workload.image.pullPolicy }}
+          env: 
+            URL: "{{ .Values.workload.url }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}

@@ -16,6 +16,7 @@ pulseaudio:
     tag: latest
 
 workload:
+  url: "https://suse.com"
   image:
     repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/firefox
     pullPolicy: IfNotPresent
