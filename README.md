@@ -12,7 +12,8 @@ TODO: Add complete list of benefits
 
 # Architecture
 
-TODO: Add drawing
+![Architecture](/architecture.png)
+
 
 # Running the basic demo
 
