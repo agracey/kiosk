@@ -10,6 +10,14 @@ Running your kiosk/HID applications this way allows for more explicit security b
 
 # Architecture
 
+The Kubernetes Pod contains the three containers (X11, PulseAudio, and the workload itself)
+
+The workload and X11 containers use a unix socket that's created in an EmptyDir to allow communication between containers. They also use an EmptyDir to share an auth token.
+
+The workload and PulseAudio containers communicate over the shared local network within the Pod.
+
+Both the PulseAudio and X11 containers use udev to communicate with the hardware. (That's a slight oversimplification...)
+
 ![Architecture](/architecture.png)
 
 ## Startup Flow
@@ -70,9 +78,10 @@ For an example workload and Dockerfile, check out the [electron app in this repo
 
 # Work that I would like to get to in the future
 
+- Switch Pulse Audio from a network socket to a unix socket
 - Replace X11 with Wayland using the [Cage project](https://github.com/cage-kiosk/cage)
 - Replace PulseAudio with Pipewire
-- Minimize installed packages (and container size)
-- Build [buildpack](https://buildpacks.io) for Electron
+- Reduce installed packages (and container size) as possible
+- Build a [buildpack](https://buildpacks.io) for Electron
 - Document usage with [Epinio](https://epinio.io) to improve DX
 - Rename project to something more interesting?
