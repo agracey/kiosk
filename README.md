@@ -8,11 +8,38 @@ The container builds are done using OpenSUSE's instance of the Open Build Servic
 
 Running your kiosk/HID applications this way allows for more explicit security boundaries along with allowing for a wider range of languages/frameworks when building your app.
 
-TODO: Add complete list of benefits
-
 # Architecture
 
 ![Architecture](/architecture.png)
+
+## Startup Flow
+
+When the server is starting up, here's the order of which components control what's being shown on the display.
+
+- UEFI (Firmware)
+
+The first thing you see is determined by the system's firmware. Different system manufactures provide more or less control over this portion of the process.
+
+- Grub Bootloader
+
+Grub then takes over from the firmware and shows the boot menu. This step can be branded or skipped depending on needs.
+
+- Linux Framebuffer device
+
+Once the system starts booting and execution is handed from the bootloader to the linux kernel, the system will start displaying logs or other basic graphics. The logs can be removed by adding `quiet` to the kernel arguments and we can write an image directly to the framebuffer.
+
+- X11 
+
+When X11 starts up, it will take over the display and show a desktop. When we don't run a taskbar or any applications, you will only see the background. By replacing the background, you can change what's displayed while the application is starting.
+
+- Application
+
+Lastly, the application itself will be composited on top of the background. For most kiosk applications, you will likely want to have this be fullscreen so the background becomes hidden.
+
+
+## Failure modes
+
+The steps above (after GRUB) stack above each other so if a layer fails, you should see the layer below it. For example, if the application fails you will see the X11 background while the app container is being restarted and, if X11 is restarted, you will see the framebuffer.
 
 
 # Running the basic demo
