@@ -39,12 +39,14 @@ spec:
             readOnlyRootFilesystem: false
           env:
           - name: PULSE_SERVER
-            value: "127.0.0.1" 
+            value: "/var/run/pulse/native" 
           - name: DISPLAY
             value: ':0'
           - name: XAUTHORITY
             value: /root/xauthority/.xauth
           volumeMounts:
+            - mountPath: /var/run/pulse/
+              name: pasocket
             - mountPath: /tmp/.X11-unix/
               name: xsocket
             - mountPath: /root/xauthority/
@@ -55,7 +57,7 @@ spec:
         - name: wallboard
           env:
             - name: PULSE_SERVER
-              value: '127.0.0.1'
+              value: "/var/run/pulse/native" 
             - name: DISPLAY
               value: ':0'
             - name: XAUTHORITY
@@ -65,6 +67,8 @@ spec:
           securityContext:
             runAsUser: 1000
           volumeMounts:
+            - mountPath: /var/run/pulse/
+              name: pasocket
             - mountPath: /tmp/.X11-unix/
               name: xsocket
             - mountPath: /home/user/xauthority/
@@ -75,6 +79,8 @@ spec:
         - name: xauthority
           emptyDir: {}
         - name: xsocket
+          emptyDir: {}
+        - name: pasocket
           emptyDir: {}
         - name: udev-data
           hostPath:
