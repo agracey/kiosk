@@ -39,8 +39,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 
+podLabels: {}
 podAnnotations: {}
 resources: {}
 nodeSelector: {}
-tolerations: []
-affinity: {}
