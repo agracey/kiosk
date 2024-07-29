@@ -72,13 +72,17 @@ spec:
             value: "{{ .Values.workload.url }}"
           - name: PULSE_SERVER
             value: "/var/run/pulse/native"
+          - name: DISPLAY
+            value: ':0'
+          - name: XAUTHORITY
+            value: /home/user/xauthority/.xauth
           volumeMounts:
             - mountPath: /tmp/.X11-unix/
               name: xsocket
             - mountPath: /home/user/xauthority/
               name: xauthority
             - mountPath: /var/run/pulse/
-              name: psocket
+              name: pasocket
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}
