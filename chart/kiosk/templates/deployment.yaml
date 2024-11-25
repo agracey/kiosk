@@ -39,6 +39,11 @@ spec:
               name: xauthority
             - mountPath: /run/udev/data/
               name: udev-data
+            {{- with .Values.X11.keyboardModMap }}
+            - mountPath: /home/user/.Xmodmap
+              subPath: .Xmodmap
+              name: xmodmap
+            {{- end }}
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
           imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
@@ -93,8 +98,8 @@ spec:
           image: "{{ .Values.vnc.image.repository }}:{{ .Values.vnc.image.tag }}"
           imagePullPolicy: {{ .Values.vnc.image.pullPolicy }}
           ports:
-            - containerPort: 5900
-              name: vnc
+          - containerPort: 5900
+            name: vnc
           env:
             - name: DISPLAY
               value: ':0'
@@ -123,3 +128,8 @@ spec:
           hostPath:
             path: /run/udev/data/
             type: Directory
+        {{- with .Values.X11.keyboardModMap }}
+        - name: xmodmap
+          configMap:
+            name: xmodmap
+        {{- end }}

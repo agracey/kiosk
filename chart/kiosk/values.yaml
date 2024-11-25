@@ -3,30 +3,38 @@
 
 X11:
   image:
-    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/x11
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: notaskbar
-
-pulseaudio:
-  image:
-    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/pa
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/x11
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
+  keyboardModMap: |
+    clear: Control
+    clear: Alt_L
+    clear: Alt_R
+    clear: Caps_Lock
+
+
+pulseaudio:
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/pa
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: test
 
 workload:
   url: "https://suse.com"
   image:
-    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/firefox
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/firefox
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
 
+
+
 vnc: 
   enabled: false
   image:
-    repository: registry.opensuse.org/home/atgracey/wallboardos/15.5/vnc
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/vnc
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "vnc"

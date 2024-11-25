@@ -1,0 +1,9 @@
+{{- with .Values.X11.keyboardModMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xmodmap
+data:
+  .Xmodmap:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
