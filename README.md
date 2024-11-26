@@ -78,10 +78,20 @@ For an example workload and Dockerfile, check out the [electron app in this repo
 
 # Work that I would like to get to in the future
 
-- Switch Pulse Audio from a network socket to a unix socket
 - Replace X11 with Wayland using the [Cage project](https://github.com/cage-kiosk/cage)
 - Replace PulseAudio with Pipewire
 - Reduce installed packages (and container size) as possible
 - Build a [buildpack](https://buildpacks.io) for Electron
 - Document usage with [Epinio](https://epinio.io) to improve DX
 - Rename project to something more interesting?
+
+
+# Misc how-to's (to reorganize)
+
+## Removing console output during boot
+
+Adding `quiet` to your kernel bootargs will remove the text that is seen on boot of linux systems.
+
+Masking `console-getty.service` and `getty@tty1.service` will remove the login prompt. 
+
+Doing both of these will show a blank screen with a flashing cursor in the top-left corner. To show something on screen between the GRUB splash screen, you could use `plymouth` or just `cat` a raw framebuffer file to `/dev/fb0`. (Check out https://github.com/zqb-all/convertfb for a tool on converting images to the right format)
