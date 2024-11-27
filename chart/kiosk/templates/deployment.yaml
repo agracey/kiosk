@@ -40,7 +40,7 @@ spec:
             - mountPath: /run/udev/data/
               name: udev-data
             {{- with .Values.X11.keyboardModMap }}
-            - mountPath: /home/user/.Xmodmap
+            - mountPath: /root/.Xmodmap
               subPath: .Xmodmap
               name: xmodmap
             {{- end }}

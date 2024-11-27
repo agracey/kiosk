@@ -95,3 +95,35 @@ Adding `quiet` to your kernel bootargs will remove the text that is seen on boot
 Masking `console-getty.service` and `getty@tty1.service` will remove the login prompt. 
 
 Doing both of these will show a blank screen with a flashing cursor in the top-left corner. To show something on screen between the GRUB splash screen, you could use `plymouth` or just `cat` a raw framebuffer file to `/dev/fb0`. (Check out https://github.com/zqb-all/convertfb for a tool on converting images to the right format)
+
+## Turning off key combinations
+
+To disallow closing the application or otherwise tampering with the kiosk, it can be useful to remap or turn of certain keys. This can be done using (xmodmap)[https://linux.die.net/man/1/xmodmap]
+
+The helm chart allows for customizing this file with a values.yaml that looks like this: 
+
+```
+X11:
+  keyboardModMap: |
+    clear control
+    clear mod1
+    clear mod2 
+    clear mod3
+    clear mod4
+    clear mod5
+    keycode  66 =
+    keycode 108 =
+    keycode 133 =
+    keycode 134 =
+    keycode 150 =
+    keycode 204 =
+    keycode 205 =
+    keycode 206 =
+    keycode 207 =
+```
+
+## Remote Debugging the browser 
+
+Chromium based browsers (including Firefox and Electron) allow for attaching a remote debugger/developer tools. 
+
+TODO: Test and write up how to expose the port and connect to it. (and likely add flag in helm chart)

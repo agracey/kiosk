@@ -7,11 +7,7 @@ X11:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
-  keyboardModMap: |
-    clear: Control
-    clear: Alt_L
-    clear: Alt_R
-    clear: Caps_Lock
+  keyboardModMap: null
 
 
 pulseaudio:
@@ -28,7 +24,6 @@ workload:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
-
 
 
 vnc: 

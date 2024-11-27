@@ -8,4 +8,6 @@ touch /home/user/xauthority/.xauth
 xauth -i -f /home/user/xauthority/.xauth generate :0 . trusted
 chown -R user:users /home/user/xauthority
 
+( [ -f ~/.Xmodmap ] ) && DISPLAY=:0 xmodmap ~/.Xmodmap
+
 exec icewm-session-lite
