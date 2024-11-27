@@ -21,3 +21,7 @@
 .idea/
 *.tmproj
 .vscode/
+/*helmignore
+/*.patch
+/*.obsinfo
+kiosk-*

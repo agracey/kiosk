@@ -1,0 +1,23 @@
+<services>
+  <service name="obs_scm" mode="manual">
+    <param name="url">https://github.com/agracey/kiosk</param>
+    <param name="scm">git</param>
+    <param name="revision">0.1.0</param>
+    <param name="filename">kiosk</param>
+    <param name="versionformat">@PARENT_TAG@</param>
+    <param name="versionrewrite-pattern">v([^-]*)-?.*</param>
+    <param name="subdir">chart/kiosk</param>
+    <param name="extract">Chart.yaml</param>
+    <param name="extract">values.yaml</param>
+    <param name="extract">.helmignore</param>
+  </service>
+  <service name="obs_scm" mode="manual">
+    <param name="url">https://github.com/agracey/kiosk</param>
+    <param name="scm">git</param>
+    <param name="revision">0.1.0</param>
+    <param name="version">_none_</param>
+    <param name="subdir">chart/kiosk/templates</param>
+    <param name="filename">templates</param>
+  </service>
+  <service mode="buildtime" name="kiwi_metainfo_helper"/>
+</services>

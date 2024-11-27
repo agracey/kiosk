@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+#!BuildTag: kiosk:latest
+#!BuildTag: kiosk:%VERSION%
+
 apiVersion: v2
 name: kiosk
 description: Manage kiosk or HID workloads using Kubernetes
