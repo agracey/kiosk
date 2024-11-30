@@ -54,7 +54,7 @@ The steps above (after GRUB) stack above each other so if a layer fails, you sho
 
 To run the basic demo in Kubernetes:
 - Install a Linux and boot to a command line instead of a desktop environment
-- Install [K3s](k3s.io) or Kubernetes distribution of your choice (v1.29 or newer)
+- Install [K3s](https://k3s.io) or Kubernetes distribution of your choice (v1.29 or newer)
 - Download or clone this repo
 - Run `kubectl apply -f ./yaml/basic.yaml`
 
