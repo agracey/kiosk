@@ -20,4 +20,10 @@
     <param name="filename">templates</param>
   </service>
   <service mode="buildtime" name="kiwi_metainfo_helper"/>
+  <service name="replace_using_package_version" mode="buildtime">
+    <param name="file">Chart.yaml</param>
+    <param name="regex">%VERSION%</param>
+    <param name="package">kiosk</param>
+    <param name="parse-version">patch</param>
+  </service>
 </services>
