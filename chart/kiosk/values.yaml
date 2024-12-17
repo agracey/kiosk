@@ -15,24 +15,32 @@ pulseaudio:
     repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/pa
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: test
+    tag: latest
 
 workload:
   url: "https://suse.com"
+  env: 
+  - name: "ADDITIONAL_FLAGS"
+    value: "--start-debugger-server 6000 --profile /home/user/.mozilla/firefox/profile/"
   image:
     repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/firefox
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: latest
-
-
+    tag: withdev
+  ffprofile: |
+    user_pref("signon.rememberSignons",false);
+    user_pref("devtools.chrome.enabled",true);
+    user_pref("devtools.debugger.force-local",false);
+    user_pref("devtools.debugger.remote-enabled",true);
+    user_pref("devtools.debugger.prompt-connection",false);
+    
 vnc: 
   enabled: false
   image:
     repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/vnc
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "vnc"
+    tag: "latest"
   service:
     type: ClusterIP
     port: 80

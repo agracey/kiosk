@@ -76,6 +76,10 @@ spec:
           securityContext:
             runAsUser: 1000
           env: 
+          {{- range .Values.workload.env }}
+          - name: "{{ .name }}"
+            value: "{{ .value }}"
+          {{- end }}
           - name: URL
             value: "{{ .Values.workload.url }}"
           - name: PULSE_SERVER
@@ -91,6 +95,19 @@ spec:
               name: xauthority
             - mountPath: /var/run/pulse/
               name: pasocket
+            {{- with .Values.workload.ffprofile }}
+            - mountPath: /home/user/.mozilla/firefox/profiles.ini
+              subPath: profiles.ini
+              name: ffprofile
+            - mountPath: /home/user/.mozilla/firefox/profile/
+              name: profiledir
+            - mountPath: /home/user/.mozilla/firefox/profile/user.js
+              subPath: user.js
+              name: ffprofile
+            {{- end }}
+          ports:
+            - containerPort: 6000
+              name: debugger
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}
@@ -132,4 +149,11 @@ spec:
         - name: xmodmap
           configMap:
             name: xmodmap
+        {{- end }}
+        {{- with .Values.workload.ffprofile }}
+        - name: profiledir
+          emptyDir: {}
+        - name: ffprofile
+          configMap:
+            name: ffprofile
         {{- end }}
