@@ -98,7 +98,7 @@ Doing both of these will show a blank screen with a flashing cursor in the top-l
 
 ## Turning off key combinations
 
-To disallow closing the application or otherwise tampering with the kiosk, it can be useful to remap or turn of certain keys. This can be done using (xmodmap)[https://linux.die.net/man/1/xmodmap]
+To disallow closing the application or otherwise tampering with the kiosk, it can be useful to remap or turn of certain keys. This can be done using [xmodmap](https://linux.die.net/man/1/xmodmap)
 
 The helm chart allows for customizing this file with a values.yaml that looks like this: 
 
