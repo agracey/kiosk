@@ -137,9 +137,9 @@ spec:
       {{- end }}
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 5
-      {{ if .Values.workload.hostAliases}}
+      {{ if .Values.hostAliases}}
       hostAliases:
-        {{- toYaml .Values.workload.hostAliases | nindent 8 }}
+        {{- toYaml .Values.hostAliases | nindent 8 }}
       {{ end }}
       volumes:
         - name: xauthority
