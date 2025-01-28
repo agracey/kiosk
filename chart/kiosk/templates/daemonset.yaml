@@ -69,6 +69,22 @@ spec:
               name: pasocket
             - mountPath: /run/udev/data/
               name: udev-data
+        {{ if .Values.workload.nssdbSecretName }}
+        - name: nssdb-fixowner
+          image: {{ .Values.X11.image.repository }}:{{ .Values.X11.image.tag }}
+          imagePullPolicy: {{ .Values.X11.image.pullPolicy }}
+          command: [ "bash" ]
+          args: 
+            - -c
+            -  "mkdir /tmp/new/nssdb; cp /tmp/old/* /tmp/new/nssdb/; chown 1000 -R /tmp/new/nssdb"
+          securityContext: 
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /tmp/old
+              name: nssdb-tmp
+            - mountPath: /tmp/new
+              name: nssdb
+        {{ end }}
       containers:
         - name: workload
           image: "{{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}"
@@ -91,6 +107,10 @@ spec:
               name: xauthority
             - mountPath: /var/run/pulse/
               name: pasocket
+            {{ if .Values.workload.nssdbSecretName }}
+            - mountPath: /home/user/.pki
+              name: nssdb
+            {{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}
@@ -117,6 +137,10 @@ spec:
       {{- end }}
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 5
+      {{ if .Values.workload.hostAliases}}
+      hostAliases:
+        {{- toYaml .Values.workload.hostAliases | nindent 8 }}
+      {{ end }}
       volumes:
         - name: xauthority
           emptyDir: {}
@@ -133,3 +157,10 @@ spec:
           configMap:
             name: xmodmap
         {{- end }}
+        {{ if .Values.workload.nssdbSecretName }}
+        - name: nssdb
+          emptyDir: {}
+        - name: nssdb-tmp
+          secret: 
+            secretName: {{ .Values.workload.nssdbSecretName }}
+        {{ end }}
