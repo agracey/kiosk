@@ -92,8 +92,14 @@ spec:
           securityContext:
             runAsUser: 1000
           env: 
+          {{- range .Values.workload.env }}
+          - name: "{{ .name }}"
+            value: "{{ .value }}"
+          {{- end }}
+          {{ if .Values.workload.url }}
           - name: URL
             value: "{{ .Values.workload.url }}"
+          {{ end }}
           - name: PULSE_SERVER
             value: "/var/run/pulse/native"
           - name: DISPLAY
@@ -111,6 +117,14 @@ spec:
             - mountPath: /home/user/.pki
               name: nssdb
             {{ end }}
+            {{- range .Values.workload.additionalSecrets }}
+            - name: "extsecret-wl-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{- end }}
+            {{- range .Values.workload.additionalConfigMaps }}
+            - name: "extconfig-wl-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}
@@ -164,3 +178,13 @@ spec:
           secret: 
             secretName: {{ .Values.workload.nssdbSecretName }}
         {{ end }}
+        {{- range .Values.workload.additionalSecrets }}
+        - name: "extsecret-wl-{{ .name }}"
+          secret: 
+            secretName: "{{ .name }}"
+        {{- end }}
+        {{- range .Values.workload.additionalConfigMaps }}
+        - name: "extconfig-wl-{{ .name }}"
+          configMap: 
+            name: "{{ .name }}"
+        {{- end }}
