@@ -1,16 +1,15 @@
 # Note: This currently only works on x86_64
 
-FROM registry.opensuse.org/home/atgracey/wallboardos/15.5/x11app-base:latest as build
+FROM registry.opensuse.org/home/atgracey/wallboardos/15.6/x11app-base:latest as build
+RUN zypper in -y mozilla-nss mozilla-nss-tools libxshmfence1 libdrm libgbm1
 
 WORKDIR /app
 COPY . .
 RUN npm i 
-RUN npm run build
+RUN chown 1000 -R . 
 
-FROM registry.opensuse.org/home/atgracey/wallboardos/15.5/x11app-base:latest
-
-WORKDIR /app
-COPY --from=build /app/deployment/linux-unpacked/ /app/
 USER user
 
-CMD ["/app/electron-example", "--no-sandbox", "--no-zygote"]
+#CMD ["/app/electron-example", "--no-sandbox", "--no-zygote"]
+CMD ["/app/node_modules/electron/dist/electron", ".", "--no-sandbox", "--remote-debugging-port=6000"]
+

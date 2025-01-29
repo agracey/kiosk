@@ -122,6 +122,53 @@ X11:
     keycode 207 =
 ```
 
+## Adding Hostname Resolution
+
+The helm chart allows for adding additional hostname resolution in case your workload needs to refer to static ip addresses: 
+
+```
+hostAliases:
+- hostnames:
+  - "cockpit.local"
+  ip: "172.16.0.1"
+```
+
+## Connecting with Self Signed Certs
+
+If your UI needs to load from locations that are secured with self-signed certificates, this is complicated by Chromium (and related stacks such as Electron) using it's own trust store for certificates so you need to load a new one in seperately.
+
+To do this, you can build a generic secret with an nssdb files with a script that looks like this:
+
+```
+#!/bin/bash
+export NSSDB=/tmp/cert/nssdb
+
+
+# Create new self-signed cert
+openssl req -x509 -sha256 -days 36500 -keyout mycert.key -out mycert.crt -nodes -subj "/C=US/ST=CA/O=OC/OU=Org/CN=myhost.local" -addext "subjectAltName = DNS:myhost.local"
+
+# Create P12 cert from self-signed
+openssl pkcs12 -export -out mycert.p12 -inkey mycert.key -in mycert.crt -passout pass: -name mycert
+
+# Create NSSDB files 
+mkdir -p $NSSDB
+certutil -d sql:$NSSDB -N --empty-password 
+
+# Import P12 cert to NSSDB and add permissions
+pk12util -d sql:$NSSDB -i mycert.p12 -W ""
+certutil -d sql:$NSSDB -M -n "mycert" -t "TCu,,"
+
+# Create secret from files on disk
+kubectl create secret generic nssdb -n kiosk --from-file=$NSSDB
+```
+
+Then add the following to your helm values:
+
+```
+workload: 
+  nssdbSecretName: nssdb
+```
+
 ## Remote Debugging the browser 
 
 Chromium based browsers (including Firefox and Electron) allow for attaching a remote debugger/developer tools. 

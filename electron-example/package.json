@@ -2,7 +2,7 @@
   "name": "electron-example",
   "version": "1.0.0",
   "description": "Example Application for running Electron in a container",
-  "main": "src/index.js",
+  "main": "index.js",
   "build": {
     "appId": "Sample",
     "artifactName": "Sample",
@@ -11,8 +11,9 @@
     },
     "files": [
       "!node_modules",
-      "src/*",
-      "package.json"
+      "package.json",
+      "index.html",
+      "index.js"
     ],
     "linux": {
       "target": "dir"
@@ -22,7 +23,8 @@
     }
   },
   "scripts": {
-    "build": "electron-builder -l"
+    "build": "electron-builder -l",
+    "start": "electron . --no-sandbox --no-zygote"
   },
   "homepage": "https://github.com/agracey/kiosk",
   "repository": "https://github.com/agracey/kiosk",
