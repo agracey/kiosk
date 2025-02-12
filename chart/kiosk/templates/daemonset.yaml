@@ -44,6 +44,11 @@ spec:
               subPath: .Xmodmap
               name: xmodmap
             {{- end }}
+            {{- with .Values.X11.xinitrcOverride }}
+            - mountPath: /etc/X11/xinit/
+              subPath: xinitrc
+              name: xinitrc
+            {{- end }}
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
           imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
@@ -170,6 +175,11 @@ spec:
         - name: xmodmap
           configMap:
             name: xmodmap
+        {{- end }}
+        {{- with .Values.X11.xinitrcOverride }}
+        - name: xinitrc
+          configMap: 
+            name: xinitrc
         {{- end }}
         {{ if .Values.workload.nssdbSecretName }}
         - name: nssdb

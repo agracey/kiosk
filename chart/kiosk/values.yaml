@@ -8,6 +8,8 @@ X11:
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
   keyboardModMap: null
+  # Allows for adding additional commands prior to startx (such as xrandr)
+  xinitrcOverride: null
 
 pulseaudio:
   image:
