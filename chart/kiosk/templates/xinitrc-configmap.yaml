@@ -1,0 +1,9 @@
+{{- with .Values.X11.xinitrcOverride }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xinitrc
+data:
+  xinitrc:
+  {{- toYaml . | nindent 4 }}
+{{- end }}

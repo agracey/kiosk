@@ -44,6 +44,11 @@ spec:
               subPath: .Xmodmap
               name: xmodmap
             {{- end }}
+            {{- with .Values.X11.xinitrcOverride }}
+            - mountPath: /etc/X11/xinit/
+              subPath: xinitrc
+              name: xinitrc
+            {{- end }}
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
           imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
@@ -92,8 +97,14 @@ spec:
           securityContext:
             runAsUser: 1000
           env: 
+          {{- range .Values.workload.env }}
+          - name: "{{ .name }}"
+            value: "{{ .value }}"
+          {{- end }}
+          {{ if .Values.workload.url }}
           - name: URL
             value: "{{ .Values.workload.url }}"
+          {{ end }}
           - name: PULSE_SERVER
             value: "/var/run/pulse/native"
           - name: DISPLAY
@@ -111,6 +122,14 @@ spec:
             - mountPath: /home/user/.pki
               name: nssdb
             {{ end }}
+            {{- range .Values.workload.additionalSecrets }}
+            - name: "extsecret-wl-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{- end }}
+            {{- range .Values.workload.additionalConfigMaps }}
+            - name: "extconfig-wl-{{ .name }}"
+              mountPath: {{ .mountPath }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         {{ if .Values.vnc.enabled }}
@@ -157,6 +176,11 @@ spec:
           configMap:
             name: xmodmap
         {{- end }}
+        {{- with .Values.X11.xinitrcOverride }}
+        - name: xinitrc
+          configMap: 
+            name: xinitrc
+        {{- end }}
         {{ if .Values.workload.nssdbSecretName }}
         - name: nssdb
           emptyDir: {}
@@ -164,3 +188,13 @@ spec:
           secret: 
             secretName: {{ .Values.workload.nssdbSecretName }}
         {{ end }}
+        {{- range .Values.workload.additionalSecrets }}
+        - name: "extsecret-wl-{{ .name }}"
+          secret: 
+            secretName: "{{ .name }}"
+        {{- end }}
+        {{- range .Values.workload.additionalConfigMaps }}
+        - name: "extconfig-wl-{{ .name }}"
+          configMap: 
+            name: "{{ .name }}"
+        {{- end }}
