@@ -169,6 +169,36 @@ workload:
   nssdbSecretName: nssdb
 ```
 
+## Forcing a specific resolution
+
+Most displays will negotiate the best resolution possible but sometimes you may want to force a specific resolution. To achieve this, you can overwrite the script that does the display setup with the xinitrcOverride helm value:
+
+```
+X11:
+  xinitrcOverride: |
+    #!/bin/bash
+    xset -dpms
+    xset s off
+    xset s noblank
+    DISPLAY=:0
+
+    # Don't edit this part
+    [ ! -d "/home/user/xauthority" ] && mkdir -p "/home/user/xauthority"
+    touch /home/user/xauthority/.xauth
+    xauth -i -f /home/user/xauthority/.xauth generate $DISPLAY . trusted
+    chown -R user:users /home/user/xauthority
+
+    # Get output name (assumes a single display)
+    OUTPUT=`xrandr |grep "\ connected" | cut -d " " -f1`
+
+    # Set resolution
+    xrandr --output $OUTPUT --mode 1920x1080
+
+    ( [ -f ~/.Xmodmap ] ) && xmodmap ~/.Xmodmap
+
+    exec icewm-session-lite
+```
+
 ## Remote Debugging the browser 
 
 Chromium based browsers (including Firefox and Electron) allow for attaching a remote debugger/developer tools. 
