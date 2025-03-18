@@ -40,6 +40,12 @@ workload:
   additionalConfigMaps: []
   additionalSecrets: []
 
+  # These allow for adding health checks for the workload
+  # For more information, refer to: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  startupProbe: {}
+  livenessProbe: {}
+  
+
 vnc: 
   enabled: false
   image:
