@@ -130,6 +130,10 @@ spec:
             - name: "extconfig-wl-{{ .name }}"
               mountPath: {{ .mountPath }}
             {{- end }}
+            {{ if .Values.workload.shm.enabled }}
+            - mountPath: /dev/shm
+              name: shm
+            {{ end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -206,3 +210,9 @@ spec:
           configMap: 
             name: "{{ .name }}"
         {{- end }}
+        {{ if .Values.workload.shm.enabled }}
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.workload.shm.sizeLimit }}
+        {{ end }}
