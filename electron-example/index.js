@@ -17,15 +17,25 @@ function createWindow() {
       kiosk: true // enable kiosk mode, makes it full screen and what not 
     });
   
-  const load = process.env.URL.startsWith("http") ? win.loadPage: win.loadFile
+  const load = (url) => {
+    console.log('Trying to load: ', url)
+    if(url.startsWith("http")) {
+      console.log('as url')
+      win.loadURL(url)
+    } else {
+      console.log('as file')
+      win.loadFile(url)
+    } 
+  }
 
-  load(sample_url)
+  //win.webContents.openDevTools();
 
   const ses = win.webContents.session
 
   ses.webRequest.onHeadersReceived({urls: ['https://cockpit.local:9090/*']}, (res, callback) => {
     const responseHeaders = res.responseHeaders
-    // This is not a security issue because we can tightly control traffic into and out of the container. Also, this is only affecting `cockpit.local:9090`
+    // This is not a security issue because we can tightly control traffic into and out of the container. 
+    //   Also, this is only affecting `cockpit.local:9090`
     if (responseHeaders['X-Frame-Options']) {
       delete responseHeaders['X-Frame-Options']
     }
@@ -61,9 +71,11 @@ function createWindow() {
     console.log("Close triggered, prevented");
     event.preventDefault() // stop the browser window from being closed
   })
+
+  load(sample_url)
 }
 
 app.whenReady().then(() => {
-  console.log(`Ready. Trying to load: ${sample_url}` )
-  createWindow();
+  console.log(`Ready` )
+  createWindow()
 });
