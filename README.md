@@ -208,7 +208,7 @@ TODO: Test and write up how to expose the port and connect to it. (and likely ad
 
 ## Change /dev/shm size
 
-By default, we mount in an in-memory tmpfs to be used by the application. The limit for this volume is set to 500Mi but can be adjusted with the following helm values:
+By default, we mount in an in-memory tmpfs to be used by the application. The limit for this volume is set to 256Mi but can be adjusted with the following helm values:
 
 ```
 workload:
