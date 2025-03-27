@@ -7,7 +7,11 @@ X11:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest
+  
+  # These each provide different ways to override the keyboard mapping
   keyboardModMap: null
+  customKeyboardLayout: null
+
   # Allows for adding additional commands prior to startx (such as xrandr)
   xinitrcOverride: null
 

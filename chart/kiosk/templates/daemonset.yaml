@@ -49,6 +49,11 @@ spec:
               subPath: xinitrc
               name: xinitrc
             {{- end }}
+            {{- with .Values.X11.customKeyboardLayout }}
+            - name: xkb-config
+              mountPath: /usr/share/X11/xkb/symbols/custom_layout
+              subPath: custom_layout
+            {{- end }}
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
           imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
@@ -134,6 +139,11 @@ spec:
             - mountPath: /dev/shm
               name: shm
             {{ end }}
+            {{- with .Values.X11.customKeyboardLayout }}
+            - name: xkb-config
+              configMap:
+                name: xkb-config
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
