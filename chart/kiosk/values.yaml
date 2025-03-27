@@ -44,7 +44,11 @@ workload:
   # For more information, refer to: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   startupProbe: {}
   livenessProbe: {}
-  
+
+  # This allows for mounting an tmpfs (i.e. EmptyDir with `medium: Memory`) to /dev/shm for the browser to use
+  shm:
+    enabled: true
+    sizeLimit: 256Mi
 
 vnc: 
   enabled: false

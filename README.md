@@ -204,3 +204,22 @@ X11:
 Chromium based browsers (including Firefox and Electron) allow for attaching a remote debugger/developer tools. 
 
 TODO: Test and write up how to expose the port and connect to it. (and likely add flag in helm chart)
+
+
+## Change /dev/shm size
+
+By default, we mount in an in-memory tmpfs to be used by the application. The limit for this volume is set to 256Mi but can be adjusted with the following helm values:
+
+```
+workload:
+  shm:
+    sizeLimit: <the limit you want>
+```
+
+If you don't want or need this volume for your application, you can disable it with:
+
+```
+workload:
+  shm:
+    enabled: false
+```
