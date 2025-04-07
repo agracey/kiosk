@@ -54,16 +54,19 @@ workload:
     enabled: true
     sizeLimit: 256Mi
 
-vnc: 
-  enabled: false
-  image:
-    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/vnc
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: "vnc"
-  service:
-    type: ClusterIP
-    port: 80
+# This allows for adding containers to the same pod (such as VNC or testing tools)
+# These can optionally have access to X11 and pulse audio
+additionalContainers: []
+  # - name: vnc
+  #   image:
+  #     repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/vnc
+  #     tag: "vnc"
+  #     pullPolicy: IfNotPresent
+  #   ports:
+  #     - name: vnc
+  #       targetPort: 5900
+  #       servicePort: 5900
+  #   accessDisplay: true
 
 imagePullSecrets: []
 nameOverride: ""

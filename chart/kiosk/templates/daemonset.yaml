@@ -154,24 +154,40 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{ if .Values.vnc.enabled }}
-        - name: vnc
-          image: "{{ .Values.vnc.image.repository }}:{{ .Values.vnc.image.tag }}"
-          imagePullPolicy: {{ .Values.vnc.image.pullPolicy }}
+
+
+
+        {{- range .Values.additionalContainers }}
+        - name: {{ .name }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
           ports:
-          - containerPort: 5900
-            name: vnc
+          {{- range .ports }}
+          - containerPort: {{ .port }}
+            name: {{ .name }}
+          {{- end }}
           env:
+            {{ if .accessDisplay }}
+            - name: PULSE_SERVER
+              value: "/var/run/pulse/native"
             - name: DISPLAY
               value: ':0'
             - name: XAUTHORITY
               value: /home/user/xauthority/.xauth
+            {{ end }}
+          {{ if .accessDisplay }}
           volumeMounts:
             - mountPath: /tmp/.X11-unix/
               name: xsocket
             - mountPath: /home/user/xauthority/
               name: xauthority
-        {{ end }}
+            - mountPath: /var/run/pulse/
+              name: pasocket
+          {{ end }}
+        {{- end }}
+
+
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

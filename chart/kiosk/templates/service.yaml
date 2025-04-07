@@ -1,15 +1,19 @@
-{{ if .Values.vnc.enabled }}
+{{- range .Values.additionalContainers }}
+{{ if .ports }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: wallboard-vnc
+  name: svc-{{.name}}
 spec:
   ports:
-  - name: vnc
-    port: 5900
+  {{- range .ports}}
+  - name: {{ .name }}
+    port: {{ .servicePort }}
     protocol: TCP
-    targetPort: 5900
+    targetPort: {{ .targetPort }}
+  {{- end }}
   selector:
-    name: test-wallboard
-  type: LoadBalancer
+    {{- include "kiosk.selectorLabels" . | nindent 4 }}
+  type: ClusterIP
 {{ end }}
+{{- end }}
