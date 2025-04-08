@@ -64,12 +64,12 @@ spec:
             privileged: true
             readOnlyRootFilesystem: false
           env:
-          - name: PULSE_SERVER
-            value: "/var/run/pulse/native" 
-          - name: DISPLAY
-            value: ':0'
-          - name: XAUTHORITY
-            value: /root/xauthority/.xauth
+            - name: PULSE_SERVER
+              value: "/var/run/pulse/native"
+            - name: DISPLAY
+              value: ':0'
+            - name: XAUTHORITY
+              value: /root/xauthority/.xauth
           volumeMounts:
             - mountPath: /tmp/.X11-unix/
               name: xsocket
@@ -79,15 +79,15 @@ spec:
               name: pasocket
             - mountPath: /run/udev/data/
               name: udev-data
-        {{ if .Values.workload.nssdbSecretName }}
+        {{- if .Values.workload.nssdbSecretName }}
         - name: nssdb-fixowner
           image: {{ .Values.X11.image.repository }}:{{ .Values.X11.image.tag }}
           imagePullPolicy: {{ .Values.X11.image.pullPolicy }}
           command: [ "bash" ]
-          args: 
+          args:
             - -c
-            -  "mkdir /tmp/new/nssdb; cp /tmp/old/* /tmp/new/nssdb/; chown 1000 -R /tmp/new/nssdb"
-          securityContext: 
+            - "mkdir /tmp/new/nssdb; cp /tmp/old/* /tmp/new/nssdb/; chown 1000 -R /tmp/new/nssdb"
+          securityContext:
             runAsUser: 0
           volumeMounts:
             - mountPath: /tmp/old
@@ -102,20 +102,20 @@ spec:
           securityContext:
             runAsUser: 1000
           env: 
-          {{- range .Values.workload.env }}
-          - name: "{{ .name }}"
-            value: "{{ .value }}"
-          {{- end }}
-          {{ if .Values.workload.url }}
-          - name: URL
-            value: "{{ .Values.workload.url }}"
-          {{ end }}
-          - name: PULSE_SERVER
-            value: "/var/run/pulse/native"
-          - name: DISPLAY
-            value: ':0'
-          - name: XAUTHORITY
-            value: /home/user/xauthority/.xauth
+            {{- range .Values.workload.env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+            {{- if .Values.workload.url }}
+            - name: URL
+              value: "{{ .Values.workload.url }}"
+            {{- end }}
+            - name: PULSE_SERVER
+              value: "/var/run/pulse/native"
+            - name: DISPLAY
+              value: ':0'
+            - name: XAUTHORITY
+              value: /home/user/xauthority/.xauth
           volumeMounts:
             - mountPath: /tmp/.X11-unix/
               name: xsocket
@@ -123,10 +123,10 @@ spec:
               name: xauthority
             - mountPath: /var/run/pulse/
               name: pasocket
-            {{ if .Values.workload.nssdbSecretName }}
+            {{- if .Values.workload.nssdbSecretName }}
             - mountPath: /home/user/.pki
               name: nssdb
-            {{ end }}
+            {{- end }}
             {{- range .Values.workload.additionalSecrets }}
             - name: "extsecret-wl-{{ .name }}"
               mountPath: {{ .mountPath }}
@@ -135,47 +135,55 @@ spec:
             - name: "extconfig-wl-{{ .name }}"
               mountPath: {{ .mountPath }}
             {{- end }}
-            {{ if .Values.workload.shm.enabled }}
+            {{- if .Values.workload.shm.enabled }}
             - mountPath: /dev/shm
               name: shm
-            {{ end }}
+            {{- end }}
             {{- with .Values.X11.customKeyboardLayout }}
             - name: xkb-config
               configMap:
                 name: xkb-config
             {{- end }}
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.startupProbe }}
+          {{- with .Values.workload.startupProbe }}
           startupProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with .Values.workload.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.workload.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-
-
-
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- range .Values.additionalContainers }}
         - name: {{ .name }}
           image: "{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
           ports:
-          {{- range .ports }}
-          - containerPort: {{ .port }}
-            name: {{ .name }}
-          {{- end }}
+            {{- range .ports }}
+            - containerPort: {{ .targetPort }}
+              name: {{ .name }}
+              protocol: TCP
+            {{- end }}
           env:
-            {{ if .accessDisplay }}
+            {{- range .env }}
+            - name: "{{ .name }}"
+              value: "{{ .value }}"
+            {{- end }}
+            {{- if .accessDisplay }}
             - name: PULSE_SERVER
               value: "/var/run/pulse/native"
             - name: DISPLAY
               value: ':0'
             - name: XAUTHORITY
               value: /home/user/xauthority/.xauth
-            {{ end }}
-          {{ if .accessDisplay }}
+            {{- end }}
+          {{- if .accessDisplay }}
           volumeMounts:
             - mountPath: /tmp/.X11-unix/
               name: xsocket
@@ -183,21 +191,18 @@ spec:
               name: xauthority
             - mountPath: /var/run/pulse/
               name: pasocket
-          {{ end }}
+          {{- end }}
         {{- end }}
-
-
-
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
       terminationGracePeriodSeconds: 5
-      {{ if .Values.hostAliases}}
+      {{- if .Values.hostAliases}}
       hostAliases:
         {{- toYaml .Values.hostAliases | nindent 8 }}
-      {{ end }}
+      {{- end }}
       volumes:
         - name: xauthority
           emptyDir: {}
@@ -219,13 +224,13 @@ spec:
           configMap: 
             name: xinitrc
         {{- end }}
-        {{ if .Values.workload.nssdbSecretName }}
+        {{- if .Values.workload.nssdbSecretName }}
         - name: nssdb
           emptyDir: {}
         - name: nssdb-tmp
-          secret: 
+          secret:
             secretName: {{ .Values.workload.nssdbSecretName }}
-        {{ end }}
+        {{- end }}
         {{- range .Values.workload.additionalSecrets }}
         - name: "extsecret-wl-{{ .name }}"
           secret: 
@@ -236,9 +241,9 @@ spec:
           configMap: 
             name: "{{ .name }}"
         {{- end }}
-        {{ if .Values.workload.shm.enabled }}
+        {{- if .Values.workload.shm.enabled }}
         - name: shm
           emptyDir:
             medium: Memory
             sizeLimit: {{ .Values.workload.shm.sizeLimit }}
-        {{ end }}
+        {{- end }}
