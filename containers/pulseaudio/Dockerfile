@@ -8,4 +8,7 @@ COPY daemon.conf /etc/pulse/
 COPY client.conf /etc/pulse/
 COPY system.pa /etc/pulse/
 
-CMD ["pulseaudio"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
