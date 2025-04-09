@@ -1,5 +1,1 @@
 Your Kiosk application is running using the container: {{ .Values.workload.image.repository }}:{{ .Values.workload.image.tag }}
-
-{{ if .Values.vnc.enabled }}
-To access it via VNC, use kubectl to port forward the `wallboard-vnc` service then connect your VNC viewer to localhost on port 5900
-{{ end }}
