@@ -57,8 +57,6 @@ spec:
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
           imagePullPolicy: {{ .Values.pulseaudio.image.pullPolicy }}
-          command: ["bash"]
-          args: ["-c", "chmod a+rw /dev/snd/*; pulseaudio"]
           restartPolicy: Always
           securityContext: 
             privileged: true
