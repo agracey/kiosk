@@ -185,7 +185,7 @@ X11:
     # Don't edit this part
     [ ! -d "/home/user/xauthority" ] && mkdir -p "/home/user/xauthority"
     touch /home/user/xauthority/.xauth
-    xauth -i -f /home/user/xauthority/.xauth generate $DISPLAY . trusted
+    xauth -i -f /home/user/xauthority/.xauth generate $DISPLAY . trusted timeout 0
     chown -R user:users /home/user/xauthority
 
     # Get output name (assumes a single display)
@@ -223,3 +223,29 @@ workload:
   shm:
     enabled: false
 ```
+
+## Run a VNC server to allow for development in VMs
+
+When doing development work on a GUI application, it may be needed to run inside VMs that wouldn't have a display attached. We can get around this issue by adding a VNC server. Please note that this is not recommended in production environments due to potential security issues.
+
+To add a VNC server, install the helm chart with the following values:
+
+```
+additionalContainers:
+- name: vnc
+  image:
+    repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/vnc
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  ports:
+    - name: vnc
+      targetPort: 5900
+      servicePort: 5900
+  accessDisplay: true
+```
+
+Then, from the computer you want to connect from, run:
+
+`kubectl port-forward 5900:5900 svc/svc-vnc -n kiosk`
+
+You should now be able to connect your VNC client to localhost:5900
