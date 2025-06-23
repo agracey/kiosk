@@ -257,7 +257,7 @@ spec:
             sizeLimit: {{ .Values.workload.shm.sizeLimit }}
         {{- end }}
         {{- if .Values.X11.customBackgroundConfigMap }}
-        - name: custom_bg
+        - name: custom_background
           configMap:
             name: {{ .Values.X11.customBackgroundConfigMap }}
         {{- end }}
