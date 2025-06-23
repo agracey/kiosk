@@ -15,6 +15,10 @@ X11:
   # Allows for adding additional commands prior to startx (such as xrandr)
   xinitrcOverride: null
 
+  # Allow for setting a custom background image using an existing configmap as the source
+  # The named configmap must be in the same namespace this chart is installed in 
+  customBackgroundConfigMap: null
+
 pulseaudio:
   image:
     repository: registry.opensuse.org/home/atgracey/wallboardos/15.6/pa

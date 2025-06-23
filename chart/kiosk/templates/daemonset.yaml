@@ -53,9 +53,9 @@ spec:
               mountPath: /usr/share/X11/xkb/symbols/custom_layout
               subPath: custom_layout
             {{- end }}
-            {{- with .Values.X11.customBackground }}
+            {{- with .Values.X11.customBackgroundConfigMap }}
             - name: custom_background
-              mountPath: /usr/share/wallpapers/openSUSEdefault/contents/images
+              mountPath: /usr/share/wallpapers/SLEdefault/contents/images
             {{- end }}
         - name: pulseaudio
           image: {{ .Values.pulseaudio.image.repository }}:{{ .Values.pulseaudio.image.tag }}
