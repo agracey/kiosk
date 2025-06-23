@@ -54,7 +54,7 @@ spec:
               subPath: custom_layout
             {{- end }}
             {{- with .Values.X11.customBackgroundConfigMap }}
-            - name: custom_background
+            - name: custom-background
               mountPath: /usr/share/wallpapers/SLEdefault/contents/images
             {{- end }}
         - name: pulseaudio
@@ -257,7 +257,7 @@ spec:
             sizeLimit: {{ .Values.workload.shm.sizeLimit }}
         {{- end }}
         {{- if .Values.X11.customBackgroundConfigMap }}
-        - name: custom_background
+        - name: custom-background
           configMap:
             name: {{ .Values.X11.customBackgroundConfigMap }}
         {{- end }}
