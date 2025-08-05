@@ -86,3 +86,18 @@ nodeSelector: {}
 
 # For adding custom hostnames for the workload to use
 hostAliases: []
+
+affinity: {}
+  # nodeAffinity: 
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #           - key: kiosk
+  #             operator: In
+  #             values:
+  #               - 'true'
+
+tolerations: []
+# - effect: NoSchedule
+#   key: kiosk
+#   operator: Exists
