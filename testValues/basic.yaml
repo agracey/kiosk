@@ -1,0 +1,27 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kiosk-test-basic
+  namespace: kiosk
+spec:
+  chart: oci://???
+  valuesContent: |-
+    X11:
+      image:
+        repository: ???
+        pullPolicy: IfNotPresent
+        # Overrides the image tag whose default is the chart appVersion.
+        tag: latest
+    pulseaudio:
+      image:
+        repository: ???
+        pullPolicy: IfNotPresent
+        # Overrides the image tag whose default is the chart appVersion.
+        tag: latest
+    workload:
+      image:
+        repository: ???
+        pullPolicy: IfNotPresent
+        tag: latest
+      
+      url: "http://172.16.0.1:4000/"
