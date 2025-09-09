@@ -122,6 +122,30 @@ X11:
     keycode 207 =
 ```
 
+## Ignoring NumLock State
+
+For systems with a 10-key but no NumLock key, it can be very annoying when the system comes up with NumLock off and the 10-key not working as expected. 
+
+With the xmodmap value, we can fix this by remapping all the keys directly to their number value using these values:
+
+```
+X11:
+  keyboardModMap: |
+    keycode 87 = KP_1
+    keycode 88 = KP_2
+    keycode 89 = KP_3
+    keycode 83 = KP_4
+    keycode 84 = KP_5
+    keycode 85 = KP_6
+    keycode 79 = KP_7
+    keycode 80 = KP_8
+    keycode 81 = KP_9
+    keycode 90 = KP_0
+    keycode 91 = KP_Decimal
+```
+
+Note: if these don't work, you may need to use `xinput test <name of device found with xinput list>` and pressing the keypad to validate that your keyboard is outputting the expected keycodes.
+
 ## Adding Hostname Resolution
 
 The helm chart allows for adding additional hostname resolution in case your workload needs to refer to static ip addresses: 
