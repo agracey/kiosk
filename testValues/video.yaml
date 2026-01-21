@@ -1,0 +1,22 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kiosk-test-video
+  namespace: kiosk
+spec:
+  chart: oci://???
+  valuesContent: |-
+    X11:
+      image:
+        repository: ???
+        tag: latest
+    pulseaudio:
+      image:
+        repository: ???
+        tag: latest
+    workload:
+      image:
+        repository: ???
+        tag: latest
+      
+      url: "http://172.16.0.1:4000/videotest"
